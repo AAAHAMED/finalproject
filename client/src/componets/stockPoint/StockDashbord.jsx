@@ -10,9 +10,9 @@ const StockDashboard = () => {
         const socket = socketIOClient(ENDPOINT, { transports: ['websocket'], upgrade: false });
 
         socket.on("color_detected", data => {
-            console.log("Color data received:", data);
-            const { r, g, b } = data;
-            setGoodsType(`RGB(${r}, ${g}, ${b})`);
+            console.log("Color name received:", data);
+            const { color_name } = data;
+            setGoodsType(color_name);
         });
 
         socket.on("connect_error", (err) => {
