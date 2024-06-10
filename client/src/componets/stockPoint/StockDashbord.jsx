@@ -1,22 +1,32 @@
-import React, { useState } from 'react';
-import TimeDisplay from './TimeDisplay'; // Assuming TimeDisplay is a separate component
-import GoodsReport from './GoodsReport'; // Assuming GoodsReport is a separate component
-import WebcamComponent from './WebcamComponent';
+import React, { useState, useEffect } from 'react';
+import socketIOClient from 'socket.io-client';
+
+const ENDPOINT = "http://127.0.0.1:5000";
 
 const StockDashboard = () => {
-  const [goodsType, setGoodsType] = useState('Unknown');
+    const [goodsType, setGoodsType] = useState('Unknown');
 
-  const handleColorDetected = (color) => {
-    setGoodsType(color);
-  };
+    useEffect(() => {
+        const socket = socketIOClient(ENDPOINT, { transports: ['websocket'], upgrade: false });
 
-  return (
-    <div>
-      <TimeDisplay />
-      <WebcamComponent onColorDetected={handleColorDetected} />
-      <GoodsReport data={[{ area: 'Warehouse 1', category: goodsType, count: 100 }]} />
-    </div>
-  );
+        socket.on("color_detected", data => {
+            console.log("Color data received:", data);
+            const { r, g, b } = data;
+            setGoodsType(`RGB(${r}, ${g}, ${b})`);
+        });
+
+        socket.on("connect_error", (err) => {
+            console.log(`connect_error due to ${err.message}`);
+        });
+
+        return () => socket.disconnect();
+    }, []);
+
+    return (
+        <div>
+            <h1>Detected Goods Type: {goodsType}</h1>
+        </div>
+    );
 };
 
 export default StockDashboard;
