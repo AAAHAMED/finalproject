@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
+import TimeDisplay from './TimeDisplay';
+import GoodsTable from './GoodsTable';
+import TaskAssignmentCard from './TaskAssignmentCard';
 
 const ENDPOINT = "http://127.0.0.1:5000";
 
 const StockDashboard = () => {
-    const [goodsType, setGoodsType] = useState('Unknown');
+    const [goodsType, setGoodsType] = useState('No goods received');
+    const [goodsLog, setGoodsLog] = useState([]);
+    const [taskAssigned, setTaskAssigned] = useState(false);
 
     useEffect(() => {
         const socket = socketIOClient(ENDPOINT, { transports: ['websocket'], upgrade: false });
 
         socket.on("color_detected", data => {
-            console.log("Color name received:", data);
-            const { color_name } = data;
-            setGoodsType(color_name);
+            setGoodsType(data.goodsType);
+            if (data.goodsType !== 'No goods received') {
+                const entry = {
+                    time: new Date().toLocaleTimeString(),
+                    goodsType: data.goodsType
+                };
+                setGoodsLog(log => [...log, entry]);
+                setTaskAssigned(true); // Assuming task assignment happens here
+            }
         });
 
         socket.on("connect_error", (err) => {
@@ -24,7 +35,10 @@ const StockDashboard = () => {
 
     return (
         <div>
-            <h1>Detected Goods Type: {goodsType}</h1>
+            <h1>Stock Dashboard</h1>
+            <TimeDisplay />
+            <GoodsTable entries={goodsLog} />
+            <TaskAssignmentCard isAssigned={taskAssigned} />
         </div>
     );
 };

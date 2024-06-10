@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
 const TimeDisplay = () => {
-  const [time, setTime] = useState(new Date());
+    const [currentTime, setCurrentTime] = useState(new Date());
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
 
-    return () => clearInterval(timer);
-  }, []);
+        return () => clearInterval(intervalId);
+    }, []);
 
-  return (
-    <div>
-      <h2>Current Time</h2>
-      <p>{time.toLocaleTimeString()}</p>
-    </div>
-  );
+    return <div>{currentTime.toLocaleTimeString()}</div>;
 };
 
 export default TimeDisplay;
