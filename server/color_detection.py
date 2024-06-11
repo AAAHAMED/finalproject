@@ -21,7 +21,7 @@ def categorize_color(color):
     return "No goods received"
 
 def start_color_detection(socketio):
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     try:
         while True:
             ret, frame = cap.read()
