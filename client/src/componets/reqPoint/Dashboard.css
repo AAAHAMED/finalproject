@@ -1,0 +1,42 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    padding: 20px;
+    margin: 0;
+    text-align: center;
+    width: 300%;
+}
+
+.dashboard-heading {
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    color: #34495e;
+}
+
+.time-display-container,
+.robot-simulator-container,
+.home-button-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.home-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+    background-color: #0056b3;
+}

@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
+import { Link } from 'react-router-dom';
 import TimeDisplay from './TimeDisplay';
 import GoodsTable from './GoodsTable';
 import TaskAssignmentCard from './TaskAssignmentCard';
+import { database } from './firebase-config';
+import { ref, set } from 'firebase/database';
+import RobotSimulator from './RobotSimulator';
+import './a.css';
 
 const ENDPOINT = "http://127.0.0.1:5000";
 
 const StockDashboard = () => {
-    const [goodsType, setGoodsType] = useState('No goods received');
-    const [goodsLog, setGoodsLog] = useState([]);
-    const [taskAssigned, setTaskAssigned] = useState(false);
+    const [goodsStatus, setGoodsStatus] = useState('No goods');
 
     useEffect(() => {
         const socket = socketIOClient(ENDPOINT, { transports: ['websocket'], upgrade: false });
 
         socket.on("color_detected", data => {
-            setGoodsType(data.goodsType);
-            if (data.goodsType !== 'No goods received') {
-                const entry = {
-                    time: new Date().toLocaleTimeString(),
-                    goodsType: data.goodsType
-                };
-                setGoodsLog(log => [...log, entry]);
-                setTaskAssigned(true); // Assuming task assignment happens here
-            }
+            const newStatus = data.goodsType === 'No goods received' ? 'No goods' : data.goodsType;
+            setGoodsStatus(newStatus); // Update local state to reflect new status
+            updateGoodsStatusInFirebase(newStatus); // Update Firebase with new status
         });
 
         socket.on("connect_error", (err) => {
@@ -33,12 +30,25 @@ const StockDashboard = () => {
         return () => socket.disconnect();
     }, []);
 
+    function updateGoodsStatusInFirebase(status) {
+        const statusRef = ref(database, 'goodsStatus'); // Fixed reference for goods status
+        set(statusRef, status);
+    }
+
     return (
-        <div>
+        <div className="container">
             <h1>Stock Dashboard</h1>
-            <TimeDisplay />
-            <GoodsTable entries={goodsLog} />
-            <TaskAssignmentCard isAssigned={taskAssigned} />
+            <TimeDisplay className="time-display" />
+            <RobotSimulator className="robot-simulator" goodsStatus={goodsStatus} />
+            <div className="current-status">
+                Current Goods Status: {goodsStatus}
+            </div>
+           <br></br>
+            <div className="home-button-container">
+                <Link to="/">
+                    <button className="home-button">Go to Home</button>
+                </Link>
+            </div>
         </div>
     );
 };

@@ -21,7 +21,11 @@ def categorize_color(color):
     return "No goods received"
 
 def start_color_detection(socketio):
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
+    if not cap.isOpened():
+        print("Cannot open camera")
+        return
+    
     try:
         while True:
             ret, frame = cap.read()
@@ -32,5 +36,7 @@ def start_color_detection(socketio):
             categorized_color = categorize_color(color)
             print(f"Emitting color: {categorized_color}")
             socketio.emit('color_detected', {'goodsType': categorized_color})
+    except Exception as e:
+        print(f"Error during color detection: {e}")
     finally:
         cap.release()

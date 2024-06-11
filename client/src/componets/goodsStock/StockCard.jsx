@@ -2,8 +2,9 @@ import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const stockData = [
-  { id: 1, name: "Stock A", quantity: 20 },
-  { id: 2, name: "Stock B", quantity: 15 },
+  { id: 1, name: "Stock Green", quantity: 20 },
+  { id: 2, name: "Stock Blue", quantity: 15 },
+  { id: 3, name: "Stock Red", quantity: 15 },
   // Add more stocks as needed
 ];
 
