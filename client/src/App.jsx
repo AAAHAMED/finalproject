@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './componets/Home';  // ensure correct path
+import Home from './componets/Home';  
 import StockDashboard from './componets/stockPoint/StockDashbord';
 import Dashboard from './componets/reqPoint/Dashboard';
 import Stock from './componets/goodsStock/GoodsDashbord'
